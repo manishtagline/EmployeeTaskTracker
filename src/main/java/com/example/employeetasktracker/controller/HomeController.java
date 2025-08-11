@@ -1,6 +1,5 @@
 package com.example.employeetasktracker.controller;
 
-import lombok.Getter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,10 +13,6 @@ public class HomeController {
     public String dash(){
         return "admin/dashboard";
     }
-
-
-
-
 
     @GetMapping("/admin/dashboard")
     @PreAuthorize("hasRole('ADMIN')")

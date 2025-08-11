@@ -1,0 +1,22 @@
+<configuration>
+
+    <!-- Console Appender -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Root Logger (Info by default) -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+    <!-- App Logging -->
+    <logger name="com.example.employeetasktracker" level="DEBUG"/>
+
+    <!-- Optional: Reduce noisy logs -->
+    <logger name="org.hibernate.SQL" level="WARN"/>
+    <logger name="org.springframework" level="INFO"/>
+
+</configuration>
