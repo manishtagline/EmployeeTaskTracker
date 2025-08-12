@@ -41,7 +41,7 @@ public class Employee {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id")
     private User user;
 

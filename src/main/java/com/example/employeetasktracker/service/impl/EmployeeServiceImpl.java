@@ -9,6 +9,7 @@ import com.example.employeetasktracker.util.EmployeeMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,6 +43,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public EmployeeDTO updateEmployee(Long id, EmployeeDTO employeeDTO) {
         log.info("Updating employee with id: {}", id);
         Employee emp = empRepo.findById(id)
@@ -60,11 +62,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public void deleteEmployee(Long id) {
         log.info("Deleting request for employee of id: {}", id);
         if(!empRepo.existsById(id)){
             throw new ResourceNotFoundException("Employee not found with id: "+id);
         }
-        empRepo.deleteById(id);
+
+ empRepo.deleteById(id);
+
+
+        log.info("Employee Data of id {} is successfully deleted", id);
     }
 }
