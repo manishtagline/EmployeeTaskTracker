@@ -21,7 +21,7 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String jwtSecret;
 
-    @Value("3600000")
+    @Value("${jwt.expirationMs}")
     private long jwtExpirationMs;
 
     public String generatedToken(UserDetails userDetails){

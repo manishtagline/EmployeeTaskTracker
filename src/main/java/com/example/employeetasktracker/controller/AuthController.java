@@ -1,23 +1,22 @@
 package com.example.employeetasktracker.controller;
 
+import com.example.employeetasktracker.dto.ErrorResponse;
+import com.example.employeetasktracker.dto.LoginRequest;
+import com.example.employeetasktracker.dto.LoginResponse;
 import com.example.employeetasktracker.security.JwtTokenProvider;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
-@Controller
+@RestController
 @AllArgsConstructor
 @RequestMapping("/auth")
 public class AuthController {
@@ -28,15 +27,33 @@ public class AuthController {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    @GetMapping("/login")
-    public String showLoginForm(@RequestParam(value = "error", required = false) String error, Model model) {
-        if (error != null) {
-            model.addAttribute("error", "Invalid username or password");
+    @PostMapping("/login")
+    public ResponseEntity<?> handleLoginJson(@RequestBody LoginRequest request){
+        String username = request.getUsername();
+        log.info("Login attempt from user: {}", username);
+
+        try{
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(username, request.getPassword())
+            );
+
+            UserDetails user = userDetailsService.loadUserByUsername(username);
+            String token = jwtTokenProvider.generatedToken(user);
+
+            log.info("User {} logged Successfully", username);
+
+            return ResponseEntity.ok(new LoginResponse(token, "Bearer", jwtTokenProvider.extractExpiration(token).getTime()));
+        }catch(RuntimeException e){
+            System.out.println(e.getMessage());
+            log.warn("Invalid login attempt for user: {}", username);
+            return ResponseEntity.status(401).body(new ErrorResponse("Invalid username or password!!!"));
         }
-        return "login";
     }
 
-    @PostMapping("/login")
+
+
+
+   /** @PostMapping("/login")
     public String handleLoginForm(@ModelAttribute LoginRequest request,
                                   HttpServletResponse response,
                                   Model model){
@@ -62,11 +79,12 @@ public class AuthController {
             return "login";
         }
     }
-
-    @Data
-    public static class LoginRequest{
-        private String username;
-        private String password;
-    }
+    @GetMapping("/login")
+    public String showLoginForm(@RequestParam(value = "error", required = false) String error, Model model) {
+        if (error != null) {
+            model.addAttribute("error", "Invalid username or password");
+        }
+        return "login";
+    }**/
 
 }
