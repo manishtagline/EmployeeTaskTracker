@@ -2,6 +2,7 @@ package com.example.employeetasktracker.controller;
 
 import com.example.employeetasktracker.dto.EmployeeDTO;
 import com.example.employeetasktracker.service.EmployeeService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/employee")
+@Tag(name = "Employee Management", description = "Manage employees")
 public class EmployeeController {
 
     private final EmployeeService empService;

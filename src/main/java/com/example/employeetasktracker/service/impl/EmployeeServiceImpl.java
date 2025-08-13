@@ -47,7 +47,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDTO updateEmployee(Long id, EmployeeDTO employeeDTO) {
         log.info("Updating employee with id: {}", id);
         Employee emp = empRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: "+id));
+                .orElseThrow(() -> {
+                    log.error("Employee not found with id: {}", id);
+                    return   new ResourceNotFoundException("Employee not found with id: "+id);
+                });
 
         emp.setFirstName(employeeDTO.getFirstName());
         emp.setLastName(employeeDTO.getLastName());
@@ -68,9 +71,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if(!empRepo.existsById(id)){
             throw new ResourceNotFoundException("Employee not found with id: "+id);
         }
-
- empRepo.deleteById(id);
-
+        empRepo.deleteById(id);
 
         log.info("Employee Data of id {} is successfully deleted", id);
     }
