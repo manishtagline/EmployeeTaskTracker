@@ -3,6 +3,8 @@ package com.example.employeetasktracker.service.impl;
 import com.example.employeetasktracker.dto.TaskDTO;
 import com.example.employeetasktracker.entity.Employee;
 import com.example.employeetasktracker.entity.Task;
+import com.example.employeetasktracker.entity.constant.Priority;
+import com.example.employeetasktracker.entity.constant.TaskStatus;
 import com.example.employeetasktracker.exception.ResourceNotFoundException;
 import com.example.employeetasktracker.repository.EmployeeRepository;
 import com.example.employeetasktracker.repository.TaskRepository;
@@ -10,6 +12,10 @@ import com.example.employeetasktracker.service.TaskService;
 import com.example.employeetasktracker.util.TaskMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -121,5 +127,25 @@ public class TaskServiceImpl implements TaskService {
 
         log.info("Found {} tasks for employee: {}", listOfTasks.size(), username);
         return listOfTasks;
+    }
+
+    @Override
+    public Page<TaskDTO> getFilteredTask(TaskStatus status, Priority priority, int page, int size, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Task> tasks;
+
+        if(status != null && priority != null){
+            tasks = taskRepo.findByStatusAndPriority(status, priority, pageable);
+        } else if(status != null){
+           tasks = taskRepo.findByStatus(status, pageable);
+        }else if(priority != null){
+            tasks = taskRepo.findByPriority(priority, pageable);
+        }else{
+            tasks = taskRepo.findAll(pageable);
+        }
+
+        return tasks.map(TaskMapper::toDto);
     }
 }

@@ -1,10 +1,13 @@
 package com.example.employeetasktracker.controller;
 
 import com.example.employeetasktracker.dto.TaskDTO;
+import com.example.employeetasktracker.entity.constant.Priority;
+import com.example.employeetasktracker.entity.constant.TaskStatus;
 import com.example.employeetasktracker.service.TaskService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -63,12 +66,25 @@ public class TaskController {
         log.info("PATCH /task/{}/assign/{} - api calling for assign task to employee", taskId, employeeId);
         return ResponseEntity.ok(taskService.assignTask(taskId, employeeId));
     }
-
     @GetMapping("/employee/{username}")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<List<TaskDTO>> getTasksForEmployee(@PathVariable String username){
         log.info("GET /task/employee/{} - api calling for getting specific employee task", username);
         return ResponseEntity.ok(taskService.getTasksForEmployee(username));
+    }
+
+    @GetMapping("/filter")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public ResponseEntity<Page<TaskDTO>> getFilteredTasks(
+            @RequestParam(required = false) TaskStatus status,
+            @RequestParam(required = false) Priority priority,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir
+    ){
+        log.info("GET /task/filter - api calling for filtering tasks");
+        return ResponseEntity.ok(taskService.getFilteredTask(status, priority, page, size, sortBy, sortDir));
     }
 
 }
