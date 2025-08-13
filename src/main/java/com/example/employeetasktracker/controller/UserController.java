@@ -5,6 +5,7 @@ import com.example.employeetasktracker.dto.RegisterUserRequest;
 import com.example.employeetasktracker.entity.Employee;
 import com.example.employeetasktracker.entity.User;
 import com.example.employeetasktracker.service.RegistrationService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
+@Tag(name = "User Management", description = "Manage Users")
 public class UserController {
 
     private final RegistrationService registerService;
