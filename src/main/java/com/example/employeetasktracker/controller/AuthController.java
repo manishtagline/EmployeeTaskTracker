@@ -50,41 +50,4 @@ public class AuthController {
         }
     }
 
-
-
-
-   /** @PostMapping("/login")
-    public String handleLoginForm(@ModelAttribute LoginRequest request,
-                                  HttpServletResponse response,
-                                  Model model){
-        String username = request.username;
-        log.info("Login received from user: {}", username);
-        try{
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(username, request.getPassword())
-            );
-
-            UserDetails user = userDetailsService.loadUserByUsername(username);
-            String token = jwtTokenProvider.generatedToken(user);
-
-            response.setHeader("Authorization" , "Bearer " + token);
-
-            log.info("User {} logged Successfully", username);
-
-            return "redirect:/";
-
-        }catch (BadCredentialsException e){
-            log.warn("Invalid login attempt from user: {}", username);
-            model.addAttribute("error", "Invalid username or password!!!");
-            return "login";
-        }
-    }
-    @GetMapping("/login")
-    public String showLoginForm(@RequestParam(value = "error", required = false) String error, Model model) {
-        if (error != null) {
-            model.addAttribute("error", "Invalid username or password");
-        }
-        return "login";
-    }**/
-
 }
