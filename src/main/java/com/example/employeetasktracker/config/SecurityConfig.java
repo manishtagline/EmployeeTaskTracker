@@ -1,6 +1,6 @@
 package com.example.employeetasktracker.config;
 
-import com.example.employeetasktracker.security.JwtAuthenticationFiler;
+import com.example.employeetasktracker.security.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +28,7 @@ public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
 
-    private final JwtAuthenticationFiler authenticationFiler;
+    private final JwtAuthenticationFilter authenticationFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -61,7 +61,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(authenticationFiler, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

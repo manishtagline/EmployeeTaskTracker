@@ -8,6 +8,7 @@ import com.example.employeetasktracker.entity.constant.TaskStatus;
 import com.example.employeetasktracker.exception.ResourceNotFoundException;
 import com.example.employeetasktracker.repository.EmployeeRepository;
 import com.example.employeetasktracker.repository.TaskRepository;
+import com.example.employeetasktracker.service.EmailService;
 import com.example.employeetasktracker.service.TaskService;
 import com.example.employeetasktracker.util.TaskMapper;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,8 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepo;
 
     private final EmployeeRepository empRepo;
+
+    private final EmailService emailService;
 
     @Override
     public TaskDTO createTask(TaskDTO dto) {
@@ -112,6 +115,52 @@ public class TaskServiceImpl implements TaskService {
 
         task.setAssignedTo(emp);
         Task assignTask = taskRepo.save(task);
+
+        if (emp.getEmail() != null) {
+            String htmlContent = "<!DOCTYPE html>" +
+                    "<html>" +
+                    "<head>" +
+                    "  <meta charset='UTF-8'>" +
+                    "  <style>" +
+                    "    body { margin:0; padding:0; background: linear-gradient(135deg, #1f1c2c, #928dab);" +
+                    "           font-family: Arial, sans-serif; }" +
+                    "    .container { max-width: 600px; margin: 40px auto; background: white; " +
+                    "                border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }" +
+                    "    .header { background: linear-gradient(135deg, #ff7e5f, #feb47b); padding: 20px; text-align: center; color: white; font-size: 20px; font-weight: bold; }" +
+                    "    .content { padding: 30px; color: #333; font-size: 16px; line-height: 1.6; }" +
+                    "    .content b { color: #444; }" +
+                    "    .footer { background: #f4f4f4; padding: 15px; text-align: center; font-size: 12px; color: #888; }" +
+                    "    .btn { display: inline-block; margin-top: 20px; background: linear-gradient(135deg, #11998e, #38ef7d);" +
+                    "           color: white; padding: 12px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; }" +
+                    "  </style>" +
+                    "</head>" +
+                    "<body>" +
+                    "  <div class='container'>" +
+                    "    <div class='header'>📌 New Task Assigned</div>" +
+                    "    <div class='content'>" +
+                    "      Hello <b>" + emp.getFirstName() + "</b>,<br><br>" +
+                    "      A new task has been assigned to you.<br><br>" +
+                    "      <b>Title:</b> " + task.getTitle() + "<br>" +
+                    "      <b>Description:</b> " + task.getDescription() + "<br>" +
+                    "      <b>Due Date:</b> " + task.getDueDate() + "<br><br>" +
+                    "      Please check the system for more details.<br><br>" +
+                    "      <a href='https://your-system-url/tasks' class='btn'>View Task</a>" +
+                    "    </div>" +
+                    "    <div class='footer'>&copy; 2025 Employee Task Tracker</div>" +
+                    "  </div>" +
+                    "</body>" +
+                    "</html>";
+
+            emailService.sendHtmlEmail(
+                    emp.getEmail(),
+                    "New Task Assigned: " + task.getTitle(),
+                    htmlContent
+            );
+        }
+
+
+
+
 
         log.info("Task ID: {} successfully assign to employee ID: {}", taskId, employeeId);
         return TaskMapper.toDto(assignTask);
