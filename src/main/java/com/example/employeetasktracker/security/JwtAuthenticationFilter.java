@@ -1,5 +1,6 @@
 package com.example.employeetasktracker.security;
 
+import com.example.employeetasktracker.service.TokenBlackListService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +25,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    private final TokenBlackListService tokenBlackListService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
@@ -35,6 +38,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
+
+        if(tokenBlackListService.isTokenBlackList(token)){
+            log.warn("Black Listed token is used {}", token);
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String username;
         try {
             username = jwtTokenProvider.extractUsername(token);

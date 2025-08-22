@@ -4,6 +4,9 @@ import com.example.employeetasktracker.dto.ErrorResponse;
 import com.example.employeetasktracker.dto.LoginRequest;
 import com.example.employeetasktracker.dto.LoginResponse;
 import com.example.employeetasktracker.security.JwtTokenProvider;
+import com.example.employeetasktracker.service.TokenBlackListService;
+import com.sun.net.httpserver.HttpServer;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +29,8 @@ public class AuthController {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    private final TokenBlackListService tokenBlackListService;
+
     @PostMapping("/login")
     public ResponseEntity<?> handleLoginJson(@RequestBody LoginRequest request){
         String username = request.getUsername();
@@ -47,6 +52,18 @@ public class AuthController {
             log.warn("Invalid login attempt for user: {}", username);
             return ResponseEntity.status(401).body(new ErrorResponse("Invalid username or password!!!"));
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> handlerForLogout(HttpServletRequest request){
+        String authHeader = request.getHeader("Authorization");
+        if(authHeader != null && authHeader.startsWith("Bearer ")){
+            String token = authHeader.substring(7);
+            tokenBlackListService.blackListToken(token);
+            log.info("Token black listed successfully for logout {}", token);
+        }
+
+        return ResponseEntity.ok("Logged out successfully...");
     }
 
 }
