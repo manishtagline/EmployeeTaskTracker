@@ -27,7 +27,6 @@ It provides **secure login**, **role-based access**, **task assignment & trackin
 | **Backend**   | Java 21, Spring Boot 3.x |
 | **Security**  | Spring Security, JWT |
 | **Database**  | MySQL, Spring Data JPA (Hibernate) |
-| **Frontend**  | Thymeleaf, Bootstrap |
 | **Email**     | Spring Boot Mail (JavaMailSender) |
 | **API Docs**  | Swagger / OpenAPI (springdoc) |
 | **Utilities** | Lombok, Spring DevTools |
@@ -41,7 +40,6 @@ It provides **secure login**, **role-based access**, **task assignment & trackin
 - `spring-boot-starter-security` – Authentication/Authorization
 - `mysql-connector-j` – MySQL JDBC driver
 - `jjwt` – JWT handling
-- `spring-boot-starter-thymeleaf` – UI templating
 - `spring-boot-starter-mail` – Email support
 - `springdoc-openapi-ui` – Swagger UI docs
 - `lombok` – Reduce boilerplate
@@ -136,9 +134,3 @@ Developed by Manish Giri
 
 Licensed under the MIT License.
 
-
----
-
-👉 This version has **logos, badges, clean formatting, emojis, and tables** to make it look professional like a modern open-source project.  
-
-Do you also want me to add **workflow badges** (e.g., GitHub Actions CI/CD build status, code quality badge) so it looks even more professional?
